@@ -26,7 +26,10 @@ class YoutubeSearch extends React.Component {
             loading: false,
             query: null,
             youtubeLoading: false,
+            youtubeLoadingNext: false,
+            youtubeLoadingPrev: false,
             youtubeError: null,
+            searchData: null,
             searchResult: []
         };
     }
@@ -34,9 +37,12 @@ class YoutubeSearch extends React.Component {
     componentDidMount() {
         const { ipcRenderer } = window.require('electron');
         
-        ipcRenderer.on(`ui-youtube-search-result`, (e, results) => {
+        ipcRenderer.on(`ui-youtube-search-result`, (e, results, searchData) => {
             this.setState({
+                searchData: searchData, 
                 searchResult: results, 
+                youtubeLoadingPrev: false,
+                youtubeLoadingNext: false,
                 youtubeLoading: false,
                 youtubeError: null
             });
@@ -46,6 +52,8 @@ class YoutubeSearch extends React.Component {
             this.setState({
                 searchResult: [], 
                 youtubeLoading: false,
+                youtubeLoadingNext: false,
+                youtubeLoadingPrev: false,
                 youtubeError: message
             });
         })
@@ -58,6 +66,21 @@ class YoutubeSearch extends React.Component {
             ipcRenderer.send(`ui-search-youtube`, query);
         } else {
             this.setState({
+                searchData: null,
+                searchResult: [], 
+                youtubeLoading: false,
+                youtubeError: 'Search something'
+            });
+        }
+    }
+
+    onPageChange(pageToken, query) {
+        const { ipcRenderer } = window.require('electron');
+        if (query !== '') {
+            this.setState({ youtubeLoading: true })
+            ipcRenderer.send(`ui-search-page-youtube`, query, pageToken);
+        } else {
+            this.setState({
                 searchResult: [], 
                 youtubeLoading: false,
                 youtubeError: 'Search something'
@@ -66,14 +89,28 @@ class YoutubeSearch extends React.Component {
     }
 
     render() {
+
+        let footer = this.state.searchData === null ? null : <div>
+            {this.state.searchData.prevPageToken ? <Button loading={this.state.youtubeLoadingPrev} disabled={this.state.youtubeLoading} onClick={() => {
+                this.setState({youtubeLoadingPrev: true});
+                this.onPageChange(this.state.searchData.prevPageToken, this.state.searchData.query)
+            }}>Previous Page</Button> : null }
+            {this.state.searchData.nextPageToken ? <Button 
+                style={{float: 'right'}}
+                loading={this.state.youtubeLoadingNext} disabled={this.state.youtubeLoading} onClick={() => {
+                this.setState({youtubeLoadingNext: true});
+                this.onPageChange(this.state.searchData.nextPageToken, this.state.searchData.query)
+            }}>Next Page</Button> : null }
+        </div>
+
         return (
             <Drawer
                 placement="left"
                 title="Search on Youtube"
-                width={400}
+                width={500}
                 closable={true}
                 onClose={this.props.onCloseYoutubeSearch}
-                footer={<div>footer</div>}
+                footer={footer}
                 visible={this.props.visible}
             >
                 <Row>
@@ -98,9 +135,9 @@ class YoutubeSearch extends React.Component {
                     <List
                             style={{
                                 overflowY: 'auto',
-                                height: 'calc(100vh - 164px)',
-                                maxHeight: 'calc(100vh - 164px)',
-                                minHeight: 'calc(100vh - 164px)'
+                                height: 'calc(100vh - 174px)',
+                                maxHeight: 'calc(100vh - 174px)',
+                                minHeight: 'calc(100vh - 174px)'
                             }}
                         >
                             {this.state.searchResult.map(item =>
