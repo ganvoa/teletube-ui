@@ -1,5 +1,5 @@
 import React from "react";
-import { List, Input, Button, Drawer, Typography, Empty, Row, Col, message } from "antd";
+import { List, Input, Button, Drawer, Typography, Empty, Row, Col, message, Badge } from "antd";
 import { EnterOutlined, PlusOutlined, CaretRightOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
@@ -112,9 +112,9 @@ class YoutubeSearch extends React.Component {
                             <List
                                 style={{
                                     overflowY: "auto",
-                                    height: "calc(100vh - 174px)",
-                                    maxHeight: "calc(100vh - 174px)",
-                                    minHeight: "calc(100vh - 174px)"
+                                    height: "calc(100vh - 121px)",
+                                    maxHeight: "calc(100vh - 121px)",
+                                    minHeight: "calc(100vh - 121px)"
                                 }}
                             >
                                 {this.state.searchResult.map(item => (
@@ -132,19 +132,25 @@ class YoutubeSearch extends React.Component {
                                                 }}
                                                 style={{
                                                     cursor: "pointer",
-                                                    width: 60,
-                                                    marginRight: 12
+                                                    width: 90,
+                                                    marginRight: 10
                                                 }}
                                             />
-                                            <Typography.Text
-                                                style={{
-                                                    maxWidth: "calc(100% - 80px)",
-                                                    verticalAlign: "middle"
-                                                }}
-                                                ellipsis
-                                            >
-                                                {item.title}
-                                            </Typography.Text>
+                                            <div style={{
+                                                        maxWidth: "calc(100% - 112px)",
+                                                        verticalAlign: "top",
+                                                        display: 'inline-grid'
+                                                    }}>
+                                                <Typography.Text ellipsis>
+                                                    {item.title}
+                                                </Typography.Text>
+                                                <Typography.Text type={"secondary"} ellipsis size={12}>
+                                                    {item.description}
+                                                </Typography.Text>
+                                                <Typography.Text ellipsis>
+                                                    <Badge count={item.time} style={{ borderRadius: '10%', backgroundColor: '#aaa' }} /> {item.ago}  
+                                                </Typography.Text>
+                                            </div>
                                         </div>
                                         <div>
                                             <>

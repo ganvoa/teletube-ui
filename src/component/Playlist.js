@@ -14,7 +14,8 @@ import {
     Input,
     Select,
     Popconfirm,
-    message
+    message,
+    Badge
 } from "antd";
 import Shuffle from "../assets/svg/shuffle";
 import playlistSvg from "../assets/svg/playlist.svg";
@@ -332,7 +333,7 @@ class Playlist extends React.Component {
                                         >
                                             <div
                                                 style={{
-                                                    width: "calc(100% - 60px)"
+                                                    width: "calc(100% - 75px)"
                                                 }}
                                             >
                                                 <img
@@ -343,22 +344,29 @@ class Playlist extends React.Component {
                                                     }}
                                                     style={{
                                                         cursor: "pointer",
-                                                        width: 60,
-                                                        marginRight: 20
+                                                        width: 90,
+                                                        marginRight: 10
                                                     }}
                                                 />
-
-                                                <Typography.Text
-                                                    strong
+                                                    <div style={{
+                                                        maxWidth: "calc(100% - 112px)",
+                                                        verticalAlign: "top",
+                                                        display: 'inline-grid'
+                                                    }}>
+                                                <Typography.Text strong
+                                                    style={{color: '#e91e63'}}
                                                     ellipsis
-                                                    style={{
-                                                        maxWidth: "calc(100% - 90px)",
-                                                        color: "#e91e63",
-                                                        verticalAlign: "middle"
-                                                    }}
                                                 >
                                                     {item.title}
                                                 </Typography.Text>
+                                                <Typography.Text type={"secondary"} ellipsis>
+                                                    {item.description}
+                                                </Typography.Text>
+                                                <Typography.Text ellipsis>
+                                                    <Badge count={item.time} style={{ borderRadius: '10%', backgroundColor: '#e91e63' }} />  
+                                                    <Badge count={item.addedBy} style={{ marginLeft: 10, borderRadius: '10%', backgroundColor: '#e91e63' }} />  
+                                                </Typography.Text>
+                                                </div>
                                             </div>
                                             <div>
                                                 <>
@@ -424,18 +432,22 @@ class Playlist extends React.Component {
                                                 style={{
                                                     cursor: "pointer",
                                                     width: 60,
-                                                    marginRight: 20
+                                                    marginRight: 10
                                                 }}
                                             />
-                                            <Typography.Text
-                                                style={{
-                                                    maxWidth: "calc(100% - 90px)",
-                                                    verticalAlign: "middle"
-                                                }}
-                                                ellipsis
-                                            >
+                                            <div style={{
+                                                        maxWidth: "calc(100% - 112px)",
+                                                        verticalAlign: "top",
+                                                        display: 'inline-grid'
+                                                    }}>
+                                            <Typography.Text ellipsis>
                                                 {item.title}
                                             </Typography.Text>
+                                            <Typography.Text ellipsis>
+                                                    <Badge count={item.time} style={{ borderRadius: '10%', backgroundColor: '#aaa' }} />
+                                                    <Badge count={item.addedBy} style={{ marginLeft: 10, borderRadius: '10%', backgroundColor: '#aaa' }} />
+                                                </Typography.Text>
+                                            </div>
                                         </div>
                                         <div>
                                             <>
