@@ -173,13 +173,8 @@ class App extends React.Component {
         });
         let prevSong = null;
         if (index >= 1) prevSong = this.state.currentPlaylist.tracks[index - 1];
-        else if (
-            this.state.loop &&
-            this.state.currentPlaylist.tracks.length > 0
-        ) {
-            prevSong = this.state.currentPlaylist.tracks[
-                this.state.currentPlaylist.tracks.length - 1
-            ];
+        else if (this.state.loop && this.state.currentPlaylist.tracks.length > 0) {
+            prevSong = this.state.currentPlaylist.tracks[this.state.currentPlaylist.tracks.length - 1];
         }
         let nextSong = null;
         if (index < this.state.currentPlaylist.tracks.length - 1)
@@ -187,12 +182,8 @@ class App extends React.Component {
         else if (this.state.loop) {
             nextSong = this.state.currentPlaylist.tracks[0];
         }
-        if (prevSong)
-            console.log(`canción anterior ${prevSong.id} - ${prevSong.title}`);
-        if (nextSong)
-            console.log(
-                `canción siguiente ${nextSong.id} - ${nextSong.title}`
-            );
+        if (prevSong) console.log(`canción anterior ${prevSong.id} - ${prevSong.title}`);
+        if (nextSong) console.log(`canción siguiente ${nextSong.id} - ${nextSong.title}`);
         // obtengo la cancion anterior y siguiente
         this.setState(
             {
@@ -234,22 +225,12 @@ class App extends React.Component {
         return (
             <div>
                 <div className={classLoading}>
-                    <div className="loadingio-spinner-bars-axpzpuw254w">
-                        <div className="ldio-tikloxx5pb">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                    </div>
-                    <p className="loading-text">{this.state.loadingMessage}</p>
+                    <p className="">{this.state.loadingMessage}</p>
                 </div>
                 <Row className={classMain}>
                     <Col theme="dark" span={10}>
                         <Player
-                            onDeviceDisconnected={this.onDeviceDisconnected.bind(
-                                this
-                            )}
+                            onDeviceDisconnected={this.onDeviceDisconnected.bind(this)}
                             onDeviceSelected={this.onDeviceSelected.bind(this)}
                             device={this.state.device}
                             playlist={this.state.currentPlaylist}
@@ -271,12 +252,8 @@ class App extends React.Component {
                                 <Status
                                     device={this.state.device}
                                     devices={this.state.devices}
-                                    onDisconnectDevice={this.onDisconnectDevice.bind(
-                                        this
-                                    )}
-                                    onSelectDevice={this.onSelectDevice.bind(
-                                        this
-                                    )}
+                                    onDisconnectDevice={this.onDisconnectDevice.bind(this)}
+                                    onSelectDevice={this.onSelectDevice.bind(this)}
                                     loadingDevice={this.state.loadingDevice}
                                 />
                             </Col>
