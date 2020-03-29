@@ -5,18 +5,13 @@ import { EnterOutlined, PlusOutlined, CaretRightOutlined } from "@ant-design/ico
 const { Search } = Input;
 
 class YoutubeSearch extends React.Component {
-
-
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
             query: null,
             youtubeLoading: false,
-            youtubeLoadingNext: false,
-            youtubeLoadingPrev: false,
             youtubeError: null,
-            searchData: null,
             searchResult: [],
             loadingItems: []
         };
@@ -25,12 +20,9 @@ class YoutubeSearch extends React.Component {
     componentDidMount() {
         const { ipcRenderer } = window.require("electron");
 
-        ipcRenderer.on(`ui-youtube-search-result`, (e, results, searchData) => {
+        ipcRenderer.on(`ui-youtube-search-result`, (e, results) => {
             this.setState({
-                searchData: searchData,
                 searchResult: results,
-                youtubeLoadingPrev: false,
-                youtubeLoadingNext: false,
                 youtubeLoading: false,
                 youtubeError: null,
                 loadingItems: []
@@ -51,14 +43,14 @@ class YoutubeSearch extends React.Component {
         ipcRenderer.on(`ui-add-song-error`, (e, song, msg) => {
             this.setState({
                 loadingItems: this.state.loadingItems.filter(it => it !== song.id)
-            }); 
+            });
             message.error(msg);
         });
 
         ipcRenderer.on(`ui-add-song-success`, (e, song) => {
             this.setState({
                 loadingItems: this.state.loadingItems.filter(it => it !== song.id)
-            }); 
+            });
             message.success("Song added!");
         });
     }
@@ -70,7 +62,6 @@ class YoutubeSearch extends React.Component {
             ipcRenderer.send(`ui-search-youtube`, query);
         } else {
             this.setState({
-                searchData: null,
                 searchResult: [],
                 loadingItems: [],
                 youtubeLoading: false,
@@ -78,21 +69,6 @@ class YoutubeSearch extends React.Component {
             });
         }
     };
-
-    onPageChange(pageToken, query) {
-        const { ipcRenderer } = window.require("electron");
-        if (query !== "") {
-            this.setState({ youtubeLoading: true });
-            ipcRenderer.send(`ui-search-page-youtube`, query, pageToken);
-        } else {
-            this.setState({
-                searchResult: [],
-                loadingItems: [],
-                youtubeLoading: false,
-                youtubeError: "Search something"
-            });
-        }
-    }
 
     addSong(song) {
         this.setState({
@@ -103,37 +79,6 @@ class YoutubeSearch extends React.Component {
     }
 
     render() {
-        let footer =
-            this.state.searchData === null ? null : (
-                <div>
-                    {this.state.searchData.prevPageToken ? (
-                        <Button
-                            loading={this.state.youtubeLoadingPrev}
-                            disabled={this.state.youtubeLoading}
-                            onClick={() => {
-                                this.setState({ youtubeLoadingPrev: true });
-                                this.onPageChange(this.state.searchData.prevPageToken, this.state.searchData.query);
-                            }}
-                        >
-                            Previous Page
-                        </Button>
-                    ) : null}
-                    {this.state.searchData.nextPageToken ? (
-                        <Button
-                            style={{ float: "right" }}
-                            loading={this.state.youtubeLoadingNext}
-                            disabled={this.state.youtubeLoading}
-                            onClick={() => {
-                                this.setState({ youtubeLoadingNext: true });
-                                this.onPageChange(this.state.searchData.nextPageToken, this.state.searchData.query);
-                            }}
-                        >
-                            Next Page
-                        </Button>
-                    ) : null}
-                </div>
-            );
-
         return (
             <Drawer
                 placement="left"
@@ -141,7 +86,6 @@ class YoutubeSearch extends React.Component {
                 width={600}
                 closable={true}
                 onClose={this.props.onCloseYoutubeSearch}
-                footer={footer}
                 visible={this.props.visible}
             >
                 <Row>
