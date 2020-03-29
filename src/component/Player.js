@@ -243,7 +243,7 @@ class Player extends React.Component {
     refreshSong(song) {
         console.info(`Could play current song, refresh song request for ${song.title}`);
         const { ipcRenderer } = window.require('electron');
-        if (this.props.playlist) ipcRenderer.send(`refresh-song`, this.props.playlist.uid, song);
+        if (this.props.playlist) ipcRenderer.send(`refresh-song`, this.props.playlist.id, song);
     }
 
     onResume() {
@@ -394,7 +394,7 @@ class Player extends React.Component {
                                         className="blur-player"
                                         style={{
                                             backgroundImage: this.state.currentSong
-                                                ? `url(${this.state.currentSong.thumbnails.medium.url})`
+                                                ? `url(${this.state.currentSong.image})`
                                                 : null
                                         }}
                                     />
@@ -412,7 +412,7 @@ class Player extends React.Component {
                                             width: '75%'
                                         }}
                                         alt=""
-                                        src={this.state.currentSong.thumbnails.medium.url}
+                                        src={this.state.currentSong.image}
                                     />
                                 ) : null}
                             </div>

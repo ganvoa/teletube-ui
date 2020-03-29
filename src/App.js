@@ -149,7 +149,7 @@ class App extends React.Component {
     }
 
     onPlay(song) {
-        console.log(`playing song ${song.uid} - ${song.title}`);
+        console.log(`playing song ${song.id} - ${song.title}`);
         this.setState(
             {
                 currentSong: song
@@ -164,10 +164,10 @@ class App extends React.Component {
         if (!this.state.currentSong) return;
         if (!this.state.currentPlaylist) return;
 
-        let search = this.state.currentSong.uid;
+        let search = this.state.currentSong.id;
         let index = 0;
         this.state.currentPlaylist.tracks.forEach((element, key) => {
-            if (element.uid === search) {
+            if (element.id === search) {
                 index = key;
             }
         });
@@ -188,10 +188,10 @@ class App extends React.Component {
             nextSong = this.state.currentPlaylist.tracks[0];
         }
         if (prevSong)
-            console.log(`canción anterior ${prevSong.uid} - ${prevSong.title}`);
+            console.log(`canción anterior ${prevSong.id} - ${prevSong.title}`);
         if (nextSong)
             console.log(
-                `canción siguiente ${nextSong.uid} - ${nextSong.title}`
+                `canción siguiente ${nextSong.id} - ${nextSong.title}`
             );
         // obtengo la cancion anterior y siguiente
         this.setState(

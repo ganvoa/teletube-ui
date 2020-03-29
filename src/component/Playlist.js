@@ -67,7 +67,7 @@ class Playlist extends React.Component {
         <Menu>
             <Menu.Item
                 key="1"
-                disabled={currentSong && currentSong.uid === song.uid ? true : false}
+                disabled={currentSong && currentSong.id === song.id ? true : false}
                 onClick={() => {
                     this.onDeleteSong(song);
                 }}
@@ -319,9 +319,9 @@ class Playlist extends React.Component {
                             bordered
                         >
                             {this.props.playlist.tracks.map(item =>
-                                this.props.currentSong && this.props.currentSong.uid === item.uid ? (
+                                this.props.currentSong && this.props.currentSong.id === item.id ? (
                                     <div
-                                        key={item.uid}
+                                        key={item.id}
                                         ref={this.currentItem}
                                         className="sticky"
                                     >
@@ -338,7 +338,7 @@ class Playlist extends React.Component {
                                             >
                                                 <img
                                                     alt=""
-                                                    src={item.thumbnails.medium.url}
+                                                    src={item.image}
                                                     onClick={() => {
                                                         this.onPlaySelected(item);
                                                     }}
@@ -411,14 +411,14 @@ class Playlist extends React.Component {
                                     </div>
                                 ) : (
                                     <List.Item
-                                        key={item.uid}
+                                        key={item.id}
                                         className="tt-playlist-song"
                                         style={{ justifyContent: 'space-between' }}
                                     >
                                         <div style={{ width: 'calc(100% - 60px)' }}>
                                             <img
                                                 alt=""
-                                                src={item.thumbnails.medium.url}
+                                                src={item.image}
                                                 onClick={() => {
                                                     this.onPlaySelected(item);
                                                 }}
