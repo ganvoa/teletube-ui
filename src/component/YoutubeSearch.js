@@ -1,6 +1,6 @@
 import React from "react";
 import { List, Input, Button, Drawer, Typography, Empty, Row, Col, message, Badge } from "antd";
-import { EnterOutlined, PlusOutlined, CaretRightOutlined } from "@ant-design/icons";
+import { PlusOutlined, CaretRightOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
 
@@ -13,7 +13,8 @@ class YoutubeSearch extends React.Component {
             youtubeLoading: false,
             youtubeError: null,
             searchResult: [],
-            loadingItems: []
+            loadingItems: [],
+            loadingItemsPlay: [],
         };
     }
 
@@ -25,7 +26,8 @@ class YoutubeSearch extends React.Component {
                 searchResult: results,
                 youtubeLoading: false,
                 youtubeError: null,
-                loadingItems: []
+                loadingItems: [],
+                loadingItemsPlay: [],
             });
         });
 
@@ -36,7 +38,8 @@ class YoutubeSearch extends React.Component {
                 youtubeLoadingNext: false,
                 youtubeLoadingPrev: false,
                 youtubeError: message,
-                loadingItems: []
+                loadingItems: [],
+                loadingItemsPlay: [],
             });
         });
 
@@ -47,9 +50,23 @@ class YoutubeSearch extends React.Component {
             message.error(msg);
         });
 
+        ipcRenderer.on(`ui-add-play-song-error`, (e, song, msg) => {
+            this.setState({
+                loadingItemsPlay: this.state.loadingItemsPlay.filter(it => it !== song.id)
+            });
+            message.error(msg);
+        });
+
         ipcRenderer.on(`ui-add-song-success`, (e, song) => {
             this.setState({
                 loadingItems: this.state.loadingItems.filter(it => it !== song.id)
+            });
+            message.success("Song added!");
+        });
+
+        ipcRenderer.on(`ui-add-play-song-success`, (e, song) => {
+            this.setState({
+                loadingItemsPlay: this.state.loadingItemsPlay.filter(it => it !== song.id)
             });
             message.success("Song added!");
         });
@@ -64,6 +81,7 @@ class YoutubeSearch extends React.Component {
             this.setState({
                 searchResult: [],
                 loadingItems: [],
+                loadingItemsPlay: [],
                 youtubeLoading: false,
                 youtubeError: "Search something"
             });
@@ -76,6 +94,14 @@ class YoutubeSearch extends React.Component {
         });
         const { ipcRenderer } = window.require("electron");
         ipcRenderer.send(`ui-add-song`, song);
+    }
+
+    addPlaySong(song) {
+        this.setState({
+            loadingItemsPlay: [song.id, ...this.state.loadingItemsPlay]
+        });
+        const { ipcRenderer } = window.require("electron");
+        ipcRenderer.send(`ui-add-play-song`, song);
     }
 
     render() {
@@ -155,21 +181,10 @@ class YoutubeSearch extends React.Component {
                                         <div>
                                             <>
                                                 <Button
-                                                    key={0}
-                                                    shape="circle"
-                                                    size="small"
-                                                    loading={this.state.loadingItems.includes(item.id)}
-                                                    className="tt-btn"
-                                                    icon={<EnterOutlined />}
-                                                    style={{ border: "none" }}
-                                                    onClick={() => {
-                                                        this.addSong(item);
-                                                    }}
-                                                />
-                                                <Button
                                                     key={1}
                                                     shape="circle"
                                                     size="small"
+                                                    disabled={this.state.loadingItemsPlay.includes(item.id)}
                                                     loading={this.state.loadingItems.includes(item.id)}
                                                     className="tt-btn"
                                                     icon={<PlusOutlined />}
@@ -182,12 +197,13 @@ class YoutubeSearch extends React.Component {
                                                     key={2}
                                                     shape="circle"
                                                     size="small"
-                                                    loading={this.state.loadingItems.includes(item.id)}
+                                                    disabled={this.state.loadingItems.includes(item.id)}
+                                                    loading={this.state.loadingItemsPlay.includes(item.id)}
                                                     className="tt-btn"
                                                     icon={<CaretRightOutlined />}
                                                     style={{ border: "none" }}
                                                     onClick={() => {
-                                                        this.addSong(item);
+                                                        this.addPlaySong(item);
                                                     }}
                                                 />
                                             </>

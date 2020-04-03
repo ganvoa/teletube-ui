@@ -241,9 +241,11 @@ class Player extends React.Component {
     }
 
     refreshSong(song) {
-        console.info(`Could play current song, refresh song request for ${song.title}`);
-        const { ipcRenderer } = window.require('electron');
-        if (this.props.playlist) ipcRenderer.send(`refresh-song`, this.props.playlist.id, song);
+        if (song !== null) {
+            console.info(`Could play current song, refresh song request for ${song.title}`);
+            const { ipcRenderer } = window.require('electron');
+            if (this.props.playlist) ipcRenderer.send(`refresh-song`, this.props.playlist.id, song);
+        }
     }
 
     onResume() {

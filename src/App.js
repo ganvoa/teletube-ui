@@ -4,7 +4,7 @@ import "antd/dist/antd.min.css";
 import "./assets/main.css";
 import "./assets/loading.css";
 import "./assets/scrollbar.css";
-
+import logo from "./assets/svg/logo.svg";
 import { Row, Col } from "antd";
 import Status from "./component/Status";
 import Player from "./component/Player";
@@ -225,6 +225,7 @@ class App extends React.Component {
         return (
             <div>
                 <div className={classLoading}>
+                    <img src={logo} alt="" height={200} />
                     <p className="">{this.state.loadingMessage}</p>
                 </div>
                 <Row className={classMain}>

@@ -14,8 +14,7 @@ import {
     Input,
     Select,
     Popconfirm,
-    message,
-    Badge
+    message
 } from "antd";
 import Shuffle from "../assets/svg/shuffle";
 import playlistSvg from "../assets/svg/playlist.svg";
@@ -28,7 +27,9 @@ import {
     LoadingOutlined,
     PlusOutlined,
     EditOutlined,
-    CloseOutlined
+    CloseOutlined,
+    UserOutlined,
+    ClockCircleOutlined
 } from "@ant-design/icons";
 
 const Search = Input.Search;
@@ -348,24 +349,23 @@ class Playlist extends React.Component {
                                                         marginRight: 10
                                                     }}
                                                 />
-                                                    <div style={{
+                                                <div
+                                                    style={{
                                                         maxWidth: "calc(100% - 112px)",
                                                         verticalAlign: "top",
-                                                        display: 'inline-grid'
-                                                    }}>
-                                                <Typography.Text strong
-                                                    style={{color: '#e91e63'}}
-                                                    ellipsis
+                                                        display: "inline-grid"
+                                                    }}
                                                 >
-                                                    {item.title}
-                                                </Typography.Text>
-                                                <Typography.Text type={"secondary"} ellipsis>
-                                                    {item.description}
-                                                </Typography.Text>
-                                                <Typography.Text ellipsis>
-                                                    <Badge count={item.time} style={{ borderRadius: '10%', backgroundColor: '#e91e63' }} />  
-                                                    <Badge count={item.addedBy} style={{ marginLeft: 10, borderRadius: '10%', backgroundColor: '#e91e63' }} />  
-                                                </Typography.Text>
+                                                    <Typography.Text strong style={{ color: "#e91e63" }} ellipsis>
+                                                        {item.title}
+                                                    </Typography.Text>
+                                                    <Typography.Text type={"secondary"} ellipsis>
+                                                        {item.description}
+                                                    </Typography.Text>
+                                                    <Typography.Text style={{ color: "#e91e63", fontSize: 12, marginTop: 5 }} ellipsis>
+                                                        <ClockCircleOutlined /> {item.time}
+                                                        <UserOutlined style={{marginLeft: 10}} /> {item.addedBy}
+                                                    </Typography.Text>
                                                 </div>
                                             </div>
                                             <div>
@@ -435,17 +435,17 @@ class Playlist extends React.Component {
                                                     marginRight: 10
                                                 }}
                                             />
-                                            <div style={{
-                                                        maxWidth: "calc(100% - 112px)",
-                                                        verticalAlign: "top",
-                                                        display: 'inline-grid'
-                                                    }}>
-                                            <Typography.Text ellipsis>
-                                                {item.title}
-                                            </Typography.Text>
-                                            <Typography.Text ellipsis>
-                                                    <Badge count={item.time} style={{ borderRadius: '10%', backgroundColor: '#aaa' }} />
-                                                    <Badge count={item.addedBy} style={{ marginLeft: 10, borderRadius: '10%', backgroundColor: '#aaa' }} />
+                                            <div
+                                                style={{
+                                                    maxWidth: "calc(100% - 112px)",
+                                                    verticalAlign: "top",
+                                                    display: "inline-grid"
+                                                }}
+                                            >
+                                                <Typography.Text ellipsis>{item.title}</Typography.Text>
+                                                <Typography.Text style={{fontSize: 12, marginTop: 5 }} ellipsis>
+                                                    <ClockCircleOutlined /> {item.time}
+                                                    <UserOutlined  style={{marginLeft: 10}} /> {item.addedBy}
                                                 </Typography.Text>
                                             </div>
                                         </div>
