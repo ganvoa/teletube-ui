@@ -3,10 +3,10 @@ import { PageHeader, Tag, Drawer, Button } from "antd";
 import {
     SoundOutlined,
     LoadingOutlined,
-    SettingOutlined,
     YoutubeOutlined
 } from "@ant-design/icons";
 import Cast from '../assets/svg/cast';
+import Telegram from '../assets/svg/telegram';
 import Config from "./Config";
 import YoutubeSearch from "./YoutubeSearch";
 
@@ -118,18 +118,7 @@ class Status extends React.Component {
                     ))}
                 </Drawer>
                 <PageHeader
-                    title={
-                        this.state.youtubeChannel != null
-                            ? this.state.youtubeChannel.title
-                            : ""
-                    }
-                    avatar={{
-                        src:
-                            this.state.youtubeChannel != null
-                                ? this.state.youtubeChannel.thumbnails.medium
-                                      .url
-                                : ""
-                    }}
+                    title={"TeleTube Player"}
                     tags={this.state.currentConfig != null && this.state.currentConfig.telegramBotTokenValid ? <Tag color="green">Bot Running</Tag> : <Tag color="red">Bot Stopped</Tag>}
                     extra={[
                         <Button
@@ -166,7 +155,7 @@ class Status extends React.Component {
                             key={0}
                             className="tt-btn"
                             shape="circle"
-                            icon={<SettingOutlined />}
+                            icon={<Telegram />}
                             onClick={() => {
                                 this.setState({ configVisible: true });
                             }}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Button, Drawer } from "antd";
+import { Form, Input, Button, Drawer, Select } from "antd";
 import {
     LoadingOutlined,
     CheckCircleTwoTone,
@@ -72,7 +72,12 @@ class Config extends React.Component {
                 >
                     <Input.Password />
                 </Form.Item>
-
+                <Form.Item
+                    label="Chat ID Allowed"
+                    name="chatIds"
+                >
+                    <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',']}></Select>
+                </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
                         Submit
@@ -103,7 +108,7 @@ class Config extends React.Component {
         return (
             <Drawer
                 placement="left"
-                title="Configuration"
+                title="Telegram Configuration"
                 width={400}
                 closable={true}
                 onClose={this.props.onCloseConfig}
