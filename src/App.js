@@ -55,6 +55,7 @@ class App extends React.Component {
 
         ipcRenderer.on(`devices`, (e, devices) => {
             console.log(`Se recibe ${devices.length} dispositivos`);
+            console.log(devices);
             this.setState({
                 devices: devices
             });

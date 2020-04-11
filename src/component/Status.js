@@ -1,14 +1,10 @@
-import React from "react";
-import { PageHeader, Tag, Drawer, Button } from "antd";
-import {
-    SoundOutlined,
-    LoadingOutlined,
-    YoutubeOutlined
-} from "@ant-design/icons";
+import React from 'react';
+import { PageHeader, Tag, Drawer, Button } from 'antd';
+import { SoundOutlined, LoadingOutlined, YoutubeOutlined } from '@ant-design/icons';
 import Cast from '../assets/svg/cast';
 import Telegram from '../assets/svg/telegram';
-import Config from "./Config";
-import YoutubeSearch from "./YoutubeSearch";
+import Config from './Config';
+import YoutubeSearch from './YoutubeSearch';
 
 class Status extends React.Component {
     constructor(props) {
@@ -17,12 +13,13 @@ class Status extends React.Component {
             showDevices: false,
             configVisible: false,
             youtubeChannel: null,
-            currentConfig: null
+            currentConfig: null,
+            isLoadingDevice: false
         };
     }
 
     componentDidMount() {
-        const { ipcRenderer } = window.require("electron");
+        const { ipcRenderer } = window.require('electron');
 
         ipcRenderer.on(`set-youtube-channel`, (e, youtubeChannel) => {
             this.setState({
@@ -44,6 +41,9 @@ class Status extends React.Component {
     }
 
     onDeviceSelect(device) {
+        this.setState({
+            isLoadingDevice: device.name
+        });
         this.props.onSelectDevice(device);
     }
 
@@ -88,29 +88,22 @@ class Status extends React.Component {
                     onClose={this.hideDevices.bind(this)}
                     visible={this.state.showDevices}
                 >
-                    {this.props.devices.map(el => (
+                    {this.props.devices.map((el) => (
                         <p
                             key={el.name}
                             style={{
-                                cursor: "pointer",
-                                color:
-                                    this.props.device &&
-                                    this.props.device.name === el.name
-                                        ? "#e91e63"
-                                        : null
+                                cursor: this.props.device === null || (this.props.device && this.props.device.name === el.name) ? 'pointer': null,
+                                color: this.props.device && this.props.device.name === el.name ? '#e91e63' : null
                             }}
                             onClick={() => {
-                                if (this.props.device)
-                                    this.onDisconnectDevice();
-                                else this.onDeviceSelect(el);
+                                if (this.props.device && el.name === this.props.device.name) this.onDisconnectDevice();
+                                else if(this.props.device === null) this.onDeviceSelect(el);
                             }}
                         >
-                            {this.props.loadingDevice ? (
+                            {this.props.loadingDevice && this.state.isLoadingDevice === el.name ? (
                                 <LoadingOutlined style={{ marginRight: 10 }} />
                             ) : null}
-                            {!this.props.loadingDevice &&
-                            this.props.device &&
-                            this.props.device.name === el.name ? (
+                            {!this.props.loadingDevice && this.props.device && this.props.device.name === el.name ? (
                                 <SoundOutlined style={{ marginRight: 10 }} />
                             ) : null}
                             {el.friendlyName}
@@ -118,8 +111,14 @@ class Status extends React.Component {
                     ))}
                 </Drawer>
                 <PageHeader
-                    title={"TeleTube Player"}
-                    tags={this.state.currentConfig != null && this.state.currentConfig.telegramBotTokenValid ? <Tag color="green">Bot Running</Tag> : <Tag color="red">Bot Stopped</Tag>}
+                    title={'TeleTube Player'}
+                    tags={
+                        this.state.currentConfig != null && this.state.currentConfig.telegramBotTokenValid ? (
+                            <Tag color="green">Bot Running</Tag>
+                        ) : (
+                            <Tag color="red">Bot Stopped</Tag>
+                        )
+                    }
                     extra={[
                         <Button
                             key={2}
@@ -141,14 +140,12 @@ class Status extends React.Component {
                                 ) : (
                                     <Cast
                                         style={{
-                                            color: this.props.device
-                                                ? "#e91e63"
-                                                : null
+                                            color: this.props.device ? '#e91e63' : null
                                         }}
                                     />
                                 )
                             }
-                            style={{ border: "none" }}
+                            style={{ border: 'none' }}
                             onClick={this.showDevices.bind(this)}
                         />,
                         <Button

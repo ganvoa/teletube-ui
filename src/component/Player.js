@@ -16,22 +16,31 @@ const { Paragraph, Text } = Typography;
 
 class Player extends React.Component {
     player;
-
+    isSeeking;
+    isChangingVolume;
     constructor(props) {
         super(props);
+
+        this.isSeeking = false;
+        this.isChangingVolume = false;
+
         this.state = {
             isPlaying: false,
             currentSong: null,
             currentVolume: 1,
+            seekingTime: 0,
+            seekingVolume: 0,
             duration: 0,
             currentTime: 0
         };
     }
 
     timeupdate() {
-        this.setState({
-            currentTime: this.player.currentTime
-        });
+        if (!this.isSeeking) {
+            this.setState({
+                currentTime: this.player.currentTime
+            });
+        }
     }
 
     volumeupdate() {
@@ -54,7 +63,7 @@ class Player extends React.Component {
             if (!this.state.device) this.loadedMetadata();
         });
 
-        this.player.addEventListener('error', err => {
+        this.player.addEventListener('error', (err) => {
             this.refreshSong(this.state.currentSong);
         });
 
@@ -80,7 +89,7 @@ class Player extends React.Component {
             this.loadStatus(status);
         });
 
-        ipcRenderer.on(`refresh-song`, e => {
+        ipcRenderer.on(`refresh-song`, (e) => {
             this.refreshSong(this.state.currentSong);
         });
 
@@ -92,19 +101,19 @@ class Player extends React.Component {
             this.onSongChecked(song);
         });
 
-        ipcRenderer.on(`skip`, e => {
+        ipcRenderer.on(`skip`, (e) => {
             this.onNextSong();
         });
 
-        ipcRenderer.on(`prev`, e => {
+        ipcRenderer.on(`prev`, (e) => {
             this.onPrevSong();
         });
 
-        ipcRenderer.on(`pause`, e => {
+        ipcRenderer.on(`pause`, (e) => {
             this.onPause();
         });
 
-        ipcRenderer.on(`resume`, e => {
+        ipcRenderer.on(`resume`, (e) => {
             this.onResume();
         });
 
@@ -133,19 +142,29 @@ class Player extends React.Component {
         });
 
         ipcRenderer.on(`device-update`, (e, currentTime, currentVolume) => {
-            if (this.state.currentTime !== currentTime || this.state.currentVolume !== currentVolume) {
-                this.setState({
-                    currentTime: currentTime,
-                    currentVolume: currentVolume
-                });
+            console.log('isSeeking ? ' + (this.isSeeking ? 'si': 'no'));
+            console.log(currentTime, currentVolume);
+            if (this.state.currentTime !== currentTime) {
+                if (!this.isSeeking) {
+                    this.setState({
+                        currentTime: currentTime
+                    });
+                }
+            }
+            if (this.state.currentVolume !== currentVolume) {
+                if (!this.isChangingVolume) {
+                    this.setState({
+                        currentVolume: currentVolume
+                    });
+                }
             }
         });
 
-        ipcRenderer.on(`device-finish`, e => {
+        ipcRenderer.on(`device-finish`, (e) => {
             this.onNextSong();
         });
 
-        ipcRenderer.on(`stop`, e => {
+        ipcRenderer.on(`stop`, (e) => {
             this.onStop();
         });
 
@@ -163,17 +182,19 @@ class Player extends React.Component {
                 },
                 () => {
                     this.props.onDeviceSelected(device);
+                    this.props.onStop();
                 }
             );
         });
 
-        ipcRenderer.on(`device-disconnected`, e => {
+        ipcRenderer.on(`device-disconnected`, (e) => {
             console.log(`Se desconectó del dispositivo`);
             this.setState(
                 {
                     device: null
                 },
                 () => {
+                    this.onStop();
                     this.props.onDeviceDisconnected();
                 }
             );
@@ -286,10 +307,9 @@ class Player extends React.Component {
     }
 
     onSongChecked(song) {
-
         const { ipcRenderer } = window.require('electron');
         ipcRenderer.send(`notify-now-playing`, song);
-        
+
         if (this.state.device) {
             ipcRenderer.send(`device-play`, song);
             return;
@@ -344,14 +364,20 @@ class Player extends React.Component {
     }
 
     onSeek(value) {
+        this.isSeeking = false;
         if (this.state.device) {
+            const { ipcRenderer } = window.require('electron');
+            ipcRenderer.send(`device-seek`, value);
             return;
         }
         this.player.currentTime = value;
     }
 
     onChangeVolume(value) {
+        this.isChangingVolume = false;
         if (this.state.device) {
+            const { ipcRenderer } = window.require('electron');
+            ipcRenderer.send(`device-volume`, value);
             return;
         }
         this.player.volume = value / 100;
@@ -439,8 +465,20 @@ class Player extends React.Component {
                                 min={0}
                                 disabled={this.state.currentSong ? false : true}
                                 max={this.state.duration}
-                                value={this.state.currentTime}
-                                onChange={this.onSeek.bind(this)}
+                                value={this.isSeeking ? this.state.seekingTime : this.state.currentTime}
+                                onAfterChange={(time) => {
+                                    console.log('mouseup time: ' + time);
+                                    this.onSeek(time);
+                                }}
+                                onChange={(time) => {
+                                    if (!this.isSeeking) {
+                                        this.isSeeking = true;
+                                        console.log('isSeeking');
+                                    }
+                                    this.setState({ seekingTime: time });
+                                    console.log('seekingTime: ' + this.state.seekingTime);
+                                    console.log('isSeeking: ' + this.isSeeking ? 'si' : 'no');
+                                }}
                                 tipFormatter={this.formatTime}
                             ></Slider>
                         </Col>
@@ -474,7 +512,13 @@ class Player extends React.Component {
                                 disabled={this.state.currentSong ? false : true}
                                 type="primary"
                                 onClick={this.onTogglePlay.bind(this)}
-                                icon={this.state.isPlaying ? <PauseOutlined style={{ fontSize: '32px' }} /> : <CaretRightOutlined style={{ fontSize: '32px' }} />}
+                                icon={
+                                    this.state.isPlaying ? (
+                                        <PauseOutlined style={{ fontSize: '32px' }} />
+                                    ) : (
+                                        <CaretRightOutlined style={{ fontSize: '32px' }} />
+                                    )
+                                }
                                 shape="circle"
                             />
                         </Col>
@@ -502,12 +546,27 @@ class Player extends React.Component {
                                 <SoundOutlined style={{ color: 'white' }} />
                                 <Slider
                                     className="slider"
-                                    disabled={this.state.device != null}
                                     min={0}
                                     tooltipVisible={false}
                                     max={100}
-                                    value={this.state.currentVolume * 100}
-                                    onChange={this.onChangeVolume.bind(this)}
+                                    value={
+                                        this.isChangingVolume
+                                            ? this.state.seekingVolume
+                                            : this.state.currentVolume * 100
+                                    }
+                                    onAfterChange={(volume) => {
+                                        console.log('mouseup volume: ' + volume);
+                                        this.onChangeVolume(volume);
+                                    }}
+                                    onChange={(volume) => {
+                                        if (!this.isChangingVolume) {
+                                            this.isChangingVolume = true;
+                                            console.log('isChangingVolume');
+                                        }
+                                        this.setState({ seekingVolume: volume });
+                                        console.log('seekingVolume: ' + this.state.seekingVolume);
+                                        console.log('isChangingVolume: ' + this.isChangingVolume ? 'si' : 'no');
+                                    }}
                                 ></Slider>
                             </div>
                         </Col>

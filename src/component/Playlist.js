@@ -370,6 +370,7 @@ class Playlist extends React.Component {
                                             </div>
                                             <div>
                                                 <>
+                                                    {this.props.isPlaying ? 
                                                     <div id="bars">
                                                         <div
                                                             className="bar"
@@ -404,6 +405,16 @@ class Playlist extends React.Component {
                                                             }}
                                                         />
                                                     </div>
+                                                    : <Button
+                                                        shape="circle"
+                                                        size="small"
+                                                        className="tt-btn"
+                                                        icon={<CaretRightOutlined />}
+                                                        style={{ border: "none" }}
+                                                        onClick={() => {
+                                                            this.onPlaySelected(item);
+                                                        }}
+                                                    />}
                                                     <Dropdown overlay={this.menu(this.props.currentSong, item)}>
                                                         <Button
                                                             className="tt-btn"

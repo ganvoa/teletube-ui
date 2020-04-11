@@ -1,7 +1,23 @@
 .hidden {
     display: none !important;
 }
-
+.cursor-pointer {
+    cursor: pointer;
+}
+.center-icon {
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.span-wrapper {
+    display: block;
+    position: absolute;
+    height: 80px;
+    width: 100px;
+    cursor: pointer;
+}
 .sticky {
     position: sticky;
     top: 0px;
