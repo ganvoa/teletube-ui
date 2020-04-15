@@ -26,7 +26,7 @@ class App extends React.Component {
             loadingMessage: "Preparing Everything...",
             loadingDevice: false,
             playlists: [],
-            devices: []
+            devices: [],
         };
     }
 
@@ -43,13 +43,13 @@ class App extends React.Component {
 
         ipcRenderer.on(`loading`, (e, isLoading) => {
             this.setState({
-                isLoading: isLoading
+                isLoading: isLoading,
             });
         });
 
         ipcRenderer.on(`update-loading`, (e, loadingMessage) => {
             this.setState({
-                loadingMessage: loadingMessage
+                loadingMessage: loadingMessage,
             });
         });
 
@@ -57,20 +57,20 @@ class App extends React.Component {
             console.log(`Se recibe ${devices.length} dispositivos`);
             console.log(devices);
             this.setState({
-                devices: devices
+                devices: devices,
             });
         });
     }
 
     loadPlaylists(playlists) {
         this.setState({
-            playlists: playlists
+            playlists: playlists,
         });
     }
 
     updateIsPlaying(isPlaying) {
         this.setState({
-            isPlaying: isPlaying
+            isPlaying: isPlaying,
         });
     }
 
@@ -81,7 +81,7 @@ class App extends React.Component {
                 currentSong: config.currentSong,
                 prevSong: config.prevSong,
                 nextSong: config.nextSong,
-                loop: config.loop
+                loop: config.loop,
             },
             () => {
                 this.updatePrevNext();
@@ -95,7 +95,7 @@ class App extends React.Component {
             currentSong: this.state.currentSong,
             prevSong: this.state.prevSong,
             nextSong: this.state.nextSong,
-            loop: this.state.loop
+            loop: this.state.loop,
         };
         const { ipcRenderer } = window.require("electron");
         ipcRenderer.send(`save-status`, status);
@@ -106,7 +106,7 @@ class App extends React.Component {
         const { ipcRenderer } = window.require("electron");
         ipcRenderer.send(`select-device`, device);
         this.setState({
-            loadingDevice: true
+            loadingDevice: true,
         });
     }
 
@@ -116,7 +116,7 @@ class App extends React.Component {
             const { ipcRenderer } = window.require("electron");
             ipcRenderer.send(`disconnect-device`, {});
             this.setState({
-                loadingDevice: true
+                loadingDevice: true,
             });
         }
     }
@@ -124,14 +124,14 @@ class App extends React.Component {
     onDeviceSelected(device) {
         this.setState({
             device: device,
-            loadingDevice: false
+            loadingDevice: false,
         });
     }
 
     onDeviceDisconnected() {
         this.setState({
             device: null,
-            loadingDevice: false
+            loadingDevice: false,
         });
     }
 
@@ -141,7 +141,7 @@ class App extends React.Component {
             {
                 currentSong: null,
                 nextSong: null,
-                prevSong: null
+                prevSong: null,
             },
             () => {
                 this.saveStatus();
@@ -153,7 +153,7 @@ class App extends React.Component {
         console.log(`playing song ${song.id} - ${song.title}`);
         this.setState(
             {
-                currentSong: song
+                currentSong: song,
             },
             () => {
                 this.updatePrevNext();
@@ -189,7 +189,7 @@ class App extends React.Component {
         this.setState(
             {
                 prevSong: prevSong,
-                nextSong: nextSong
+                nextSong: nextSong,
             },
             () => {
                 this.saveStatus();
@@ -200,7 +200,7 @@ class App extends React.Component {
     onPlaylist(playlist) {
         this.setState(
             {
-                playlist: playlist
+                playlist: playlist,
             },
             () => {
                 this.updatePrevNext();
@@ -211,7 +211,7 @@ class App extends React.Component {
     onLoopChange(checked) {
         this.setState(
             {
-                loop: checked
+                loop: checked,
             },
             () => {
                 this.updatePrevNext();
@@ -220,14 +220,16 @@ class App extends React.Component {
     }
 
     render() {
-        let classLoading = this.state.isLoading ? `loading` : `loading hidden`;
+        let classLoading = this.state.isLoading ? `loading center-icon` : `hidden`;
         let classMain = this.state.isLoading ? `hidden` : ``;
 
         return (
             <div>
-                <div className={classLoading}>
-                    <img src={logo} alt="" height={200} />
-                    <p className="">{this.state.loadingMessage}</p>
+                <div className={classLoading} style={{ backgroundColor: "black", cursor: 'inherit' }}>
+                    <div >
+                        <img src={logo} alt="" height={200} />
+                        <p style={{ textAlign:'center', marginTop: 30, fontSize: 20, color: "white" }}>{this.state.loadingMessage}</p>
+                    </div>
                 </div>
                 <Row className={classMain}>
                     <Col theme="dark" span={10}>
@@ -246,7 +248,7 @@ class App extends React.Component {
                     <Col
                         span={14}
                         style={{
-                            height: "calc(100vh)"
+                            height: "calc(100vh)",
                         }}
                     >
                         <Row>
