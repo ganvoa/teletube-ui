@@ -32,6 +32,7 @@ import {
   CloseOutlined,
   UserOutlined,
   SaveOutlined,
+  UploadOutlined,
   ClockCircleOutlined
 } from '@ant-design/icons';
 
@@ -182,6 +183,16 @@ class Playlist extends React.Component {
     ipcRenderer.send(`shuffle-playlist`, this.props.playlist.uid);
   }
 
+  exportPlaylist() {
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send(`ui-export-playlist`);
+  }
+
+  importPlaylist() {
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send(`ui-import-playlist`);
+  }
+
   showCreatePlaylist = () => {
     this.setState({
       showCreatePlaylist: true,
@@ -315,6 +326,32 @@ class Playlist extends React.Component {
                 : null
             }
             extra={[
+              this.props.playlist !== null ? (
+                <Button
+                  key={10}
+                  shape="circle"
+                  className="tt-btn"
+                  icon={<SaveOutlined />}
+                  style={{
+                    border: 'none',
+                    marginLeft: 0
+                  }}
+                  onClick={this.exportPlaylist.bind(this)}
+                />
+              ) : null,
+              this.props.playlist !== null ? (
+                <Button
+                  key={11}
+                  shape="circle"
+                  className="tt-btn"
+                  icon={<UploadOutlined />}
+                  style={{
+                    border: 'none',
+                    marginLeft: 0
+                  }}
+                  onClick={this.importPlaylist.bind(this)}
+                />
+              ) : null,
               this.props.playlists.length > 0 && this.props.playlist !== null ? (
                 <Popover
                   key={2}
